@@ -3,12 +3,14 @@ defmodule Onex.Blockchain do
 
   defstruct blocks: []
 
+  @spec new() :: Blockchain
   def new() do
     %Onex.Blockchain{blocks: [Block.genesis()]}
   end
 
+  @spec add(Blockchain, String.t) :: Blockchain
   def add(blockchain, data) do
-    new_block = Block.new(data, List.first(blockchain.blocks).hash)
+    new_block = Block.new(data, hd(blockchain.blocks).hash)
     %Onex.Blockchain{blocks: [new_block | blockchain.blocks]}
   end
 end
