@@ -19,11 +19,17 @@ defmodule Onex.ProofOfWork do
     run_until(pow, 0)
   end
 
+  @spec validate(ProofOfWork) :: {boolean}
+  def validate(pow) do
+    data = prepare(pow, pow.block.nonce)
+    {hash_num, _} = hash_and_num(data)
+    hash_num < pow.target
+  end
+
   @spec run_until(ProofOfWork, number) :: {number, String.t}
   defp run_until(pow, nonce) do
     data = prepare(pow, nonce)
-    new_hash = :crypto.hash(:sha256, data)
-    hash_num = new_hash |> :binary.decode_unsigned
+    {hash_num, new_hash} = hash_and_num(data)
     if hash_num < pow.target do
       {nonce, new_hash}
     else
@@ -36,5 +42,12 @@ defmodule Onex.ProofOfWork do
     block = pow.block
     block.prev_block_hash <> block.data <>
     to_string(block.timestamp) <> to_string(@target_bits) <> to_string(nonce)
+  end
+
+  @spec hash_and_num(String.t) :: {number, String.t}
+  defp hash_and_num(data) do
+    hash = :crypto.hash(:sha256, data)
+    hash_num = hash |> :binary.decode_unsigned
+    {hash_num, hash}
   end
 end
