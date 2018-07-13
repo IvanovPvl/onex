@@ -19,7 +19,7 @@ defmodule Onex.ProofOfWork do
     run_until(pow, 0)
   end
 
-  @spec validate(ProofOfWork) :: {boolean}
+  @spec validate(ProofOfWork) :: boolean
   def validate(pow) do
     data = prepare(pow, pow.block.nonce)
     {hash_num, _} = hash_and_num(data)
