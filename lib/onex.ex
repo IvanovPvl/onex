@@ -1,12 +1,7 @@
 defmodule Onex do
-  alias Onex.Blockchain
+  use Application
 
-  def run do
-    blockchain =
-      Blockchain.new()
-      |> Blockchain.add("Send 1 BTC to Pavel")
-      |> Blockchain.add("Send 2 BTC to Ivan")
-
-    IO.inspect(blockchain)
+  def start(_type, _args) do
+    Onex.Supervisor.start_link(name: Onex.Supervisor)
   end
 end
